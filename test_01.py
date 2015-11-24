@@ -3,7 +3,7 @@ import urllib
 import urllib2
 import re
 
-baseUrl = 'http://www.hao123.com/'
+baseUrl = 'http://www.xjtu.edu.cn/'
 urlList = [baseUrl]
 crawledUrls = []
 
@@ -33,8 +33,8 @@ def getURL(page):
 		else:
 			tempUrl = baseUrl + str(item)
 			tempList.append(tempUrl)
-		print tempList
-		return tempList
+	print tempList
+	return tempList
 
 
 def startCrawl(urlList):
