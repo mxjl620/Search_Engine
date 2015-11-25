@@ -25,15 +25,14 @@ def getURL(page):
 	items = re.findall(pattern,page)
 	tempList = []
 	for item in items:
-		if item.find("mail.xjtu.edu.cn") != -1:
+		if item.find("mail.xjtu.edu.cn") != -1 or item.find(".jsp") != -1 or item.find("..") != -1:
 			continue
-		if item.find(".jsp") != -1:
-			continue
-		if item.find("http://") != -1:
-			tempList.append(item)
-		else:
-			tempUrl = baseUrl + str(item)
-			tempList.append(tempUrl)
+		if item.find("xjtu") != -1:
+			if item.find("http://") != -1:
+				tempList.append(item)
+			else:
+				tempUrl = baseUrl + str(item)
+				tempList.append(tempUrl)
 	return tempList
 
 def writeData(url):
@@ -46,22 +45,16 @@ def writeData(url):
 		file.write(page)
 
 def getFilePath(url):
-	str = url.split('//')
-	dir = os.path.split(str[1])
-	if(dir[0] == '' or dir[1] == ''):
-		if(dir[0] == ''):
-			if(not os.path.exists(dir[1])):
-				os.makedirs(dir[1])
-			return dir[1] + '/origin.htm'
-		if(dir[1] == ''):
-			if(not os.path.exists(dir[0])):
-				os.makedirs(dir[0])
-			return dir[0] + '/origin.htm'
+	url = url.replace('http:/','data')
+	dir = os.path.split(url)
+	if(dir[0] == 'data' or dir[1] == ''):
+		if(not os.path.exists(url)):
+			os.makedirs(url)
+		return url + '/origin.htm'
 	else:
 		if(not os.path.exists(dir[0])):
 			os.makedirs(dir[0])
-		return str[1]
-
+		return url
 
 def startCrawl(urlList):
 	temp = []
