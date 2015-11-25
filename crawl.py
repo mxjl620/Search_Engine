@@ -4,7 +4,7 @@ import urllib2
 import re
 import os, errno
 
-baseUrl = 'http://www.xjtu.edu.cn/'
+baseUrl = 'http://www.xjtu.edu.cn'
 urlList = [baseUrl]
 crawledUrls = []
 
@@ -39,22 +39,28 @@ def getURL(page):
 def writeData(url):
 	file = None;
 	file = open(getFilePath(url), "w+")
-	file.write(getPage(url))
+	page = getPage(url)
+	if(page == None):
+		return 
+	else:
+		file.write(page)
 
 def getFilePath(url):
-	dir = os.path.split(url)
-	if(dir[0] == 'http:'):
-		try:
-			os.makedirs(str(dir[1])	
-		except OSError as exc:
-			if exc.errno == errno.EEXIST and os.path.isdir(path):
-				pass
-			else: raise	
-		return str(dir[1]) + 'origin.htm'
+	str = url.split('//')
+	dir = os.path.split(str[1])
+	if(dir[0] == '' or dir[1] == ''):
+		if(dir[0] == ''):
+			if(not os.path.exists(dir[1])):
+				os.makedirs(dir[1])
+			return dir[1] + '/origin.htm'
+		if(dir[1] == ''):
+			if(not os.path.exists(dir[0])):
+				os.makedirs(dir[0])
+			return dir[0] + '/origin.htm'
 	else:
-		return ''
-
-
+		if(not os.path.exists(dir[0])):
+			os.makedirs(dir[0])
+		return str[1]
 
 
 def startCrawl(urlList):
@@ -63,6 +69,7 @@ def startCrawl(urlList):
 		urlList.remove(url)
 		if url in crawledUrls:
 			continue
+		writeData(url)
 		crawledUrls.append(url)
 		print url,len(urlList)
 		temp = getURL(getPage(url))
@@ -70,5 +77,4 @@ def startCrawl(urlList):
 		temp1 = list(set(temp))
 		startCrawl(temp1)
 
-#startCrawl(urlList)
-writeData('http://www.xjtu.edu.cn/')
+startCrawl(urlList)
